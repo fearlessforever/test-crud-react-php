@@ -1,0 +1,6 @@
+RewriteEngine on
+
+RewriteCond %{REQUEST_FILENAME} ^.+\.php$
+RewriteRule .* - [F,L,NC]
+
+#php_flag engine off
