@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 
-export default class MessageAlert extends Component {
+class MessageAlert extends Component {
 	//<div dangerouslySetInnerHTML={{__html: this.props.pesan_error}} className={this.showHide()} />
 	kelasAlert(){
 		let pesan = this.props.pesan.teks ;
@@ -12,8 +13,9 @@ export default class MessageAlert extends Component {
 
 	handleClick()
 	{
-		if(typeof this.props.pesan.setPesanError === 'function')
-		this.props.pesan.setPesanError({ teks:false });
+		this.props.dispatch({
+			type:'updateAlert',value:{teks:false}
+		});
 	}
 	render() {
     	return (	
@@ -23,3 +25,7 @@ export default class MessageAlert extends Component {
     	);
   	}
 }
+
+export default connect( store => {
+	return { pesan : store.messageAlert }
+} )(MessageAlert)
