@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect} from 'react-redux'
 import MessageAlert from '../MessageAlert'
+import queryString from 'qs' // or query-string
 
 class FoodRecipeForm extends Component {
 	constructor()
@@ -12,35 +13,53 @@ class FoodRecipeForm extends Component {
 	handleChangeInput(e)
 	{
 		this.props.dispatch({
-			type:'setForm',value:{nama:e.target.value}
+			type:'setForm',value:{name:e.target.value}
 		});
 	}
+	sendPost(data)
+	{
+		fetch(window.helmi.api + 'master-resep-makanan2/insert_update_delete',{
+			method: 'POST',
+    	headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    	body: queryString.stringify(data)
+		}).then( result => result.json() ).then( data => {
+				this.props.dispatch( dispatch => {
+					if(data.success){
+						if(this.props.formRecipe.mode === 'Add'){
+							dispatch({type:'updateAlert',value:{texts:'Data Berhasil Ditambahkan',className:'alert alert-success',type:'Added'} })
+						}else{ 
+							dispatch({type:'updateAlert',value:{texts:'Data Berhasil Diperbaharui',className:'alert alert-info',type:'Updated'} })
+						}
+						this.setState({disabled:true});  dispatch({type:'setFetchDefault'})
+						setTimeout( () => {
+							dispatch({type:'updateAlert',value:{texts:false } });
+							this.props.history.push('/');
+						}, 1000)
 
+					}else if(data.error){
+						this.props.dispatch({
+							type:'updateAlert',value:{texts:data.error,className:'alert alert-danger',type:'Error'}
+						});
+					}
+					
+				});
+			}).catch( error => console.log(error) );
+	}
 	handleSubmit(e)
 	{
 		e.preventDefault();
 		if(this.refs.recipe_name.value){
 			this.props.dispatch( dispatch => {
 				if(this.props.formRecipe.mode === 'Add'){
-					dispatch({type:'addRecipe',value:this.refs.recipe_name.value});
-					dispatch({type:'updateAlert',value:{teks:'Data Berhasil Ditambahkan',kelas:'alert alert-success',tipe:'Added'} })
+					this.sendPost({ recipe_name:this.refs.recipe_name.value }); 
 				}else{
-					dispatch({type:'updateRecipe',value:{
-						nama:this.refs.recipe_name.value,
-						id:this.refs.id_recipe.value
-					} });
-					dispatch({type:'updateAlert',value:{teks:'Data Berhasil Diperbaharui',kelas:'alert alert-info',tipe:'Updated'} })
-				}
+					this.sendPost({ recipe_name:this.refs.recipe_name.value,id_recipe:this.refs.id_recipe.value,mode:'update'}); 
+				} 
 				
-				this.setState({disabled:true});
-				setTimeout( () => {
-					dispatch({type:'updateAlert',value:{teks:false } });
-					this.props.history.push('/');
-				}, 1000)
 			});
 		}else{
 			this.props.dispatch({
-				type:'updateAlert',value:{teks:'Data Gagal Ditambahkan',kelas:'alert alert-danger',tipe:'Failed'}
+				type:'updateAlert',value:{texts:'Nama Resep Makanan Tidak Boleh Kosong',className:'alert alert-warning',type:'Warning'}
 			});
 		}
 		
@@ -72,7 +91,7 @@ class FoodRecipeForm extends Component {
 		                <label className="input-group-addon">Nama Resep
 		                        <span className="required"> * </span>
 		                    </label>
-		                    <input type="text" className="form-control" onChange={this.handleChangeInput.bind(this)} value={this.props.formRecipe.nama} ref="recipe_name" disabled={this.state.disabled} />
+		                    <input type="text" className="form-control" onChange={this.handleChangeInput.bind(this)} value={this.props.formRecipe.name} ref="recipe_name" disabled={this.state.disabled} />
 		                    <input type="hidden" ref="id_recipe" value={this.props.formRecipe.id} />
 		                    <input type="hidden" ref="mode"  />
 		              </div>

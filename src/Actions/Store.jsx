@@ -1,7 +1,7 @@
 import { createStore , combineReducers , applyMiddleware} from 'redux'
 import thunk from 'redux-thunk'
 
-const formRecipe = (state={ nama:'',id:false ,mode:'Add'} , action) => {
+const formRecipe = (state={ name:'',id:false ,mode:'Add'} , action) => {
 	switch(action.type){
 		case 'setForm':
 			state = Object.assign({},state,action.value);
@@ -11,11 +11,25 @@ const formRecipe = (state={ nama:'',id:false ,mode:'Add'} , action) => {
 	
 	return state;
 }
+const fetchData = ( state = {
+	fetching:false , loadedData:false , getdata:false
+} , action) => {
+	switch(action.type){
+		case 'setFetch':
+			state = Object.assign({},state,action.value);
+			break;
+		case 'setFetchDefault':
+			state = {fetching:false , loadedData:false , getdata:false};
+			break;
+		default:break;
+	}
+	return state;
+}
 const permission = (state={}, action) => {
 
 	return state;
 }
-const messageAlert = (state= { teks:false,tipe:false,kelas:false }, action) => {
+const messageAlert = (state= { texts:false,type:false,className:false }, action) => {
 	switch(action.type){
 		case 'updateAlert':
 			state = Object.assign({},state,action.value);
@@ -25,24 +39,28 @@ const messageAlert = (state= { teks:false,tipe:false,kelas:false }, action) => {
 	return state;
 }
 const dataRecipe = (state=[], action) => {
-	let baru=[];
+	let newData=[];
 	switch(action.type){
 		case 'updateRecipe':
-			state[ action.value.id ]= action.value.nama
+			state[ action.value.id ]= action.value.name
 			break;
 		case 'addRecipe':
 			state.push(action.value);
 			break;
 		case 'remRecipe':
-			if(typeof state[action.value] !== 'undefined'){
-				state.splice(action.value , 1); 
+			let index = state.findIndex( i => i.id_recipe === action.value );
+			if(typeof state[index] !== 'undefined'){
+				state.splice(index , 1); 
 				state.map( v => {
-					return baru.push(v);
+					return newData.push(v);
 				});
-				return baru;
+				return newData;
 			}else{
 				break;
-			}			
+			}
+		case 'setRecipe':
+			state = action.value.length > 0 ? action.value : state ;
+			break;
 		default:break;
 	}
 	return state;
@@ -51,7 +69,7 @@ const dataRecipe = (state=[], action) => {
 const middleware = applyMiddleware(thunk);
 
 const reducers = combineReducers({
-	formRecipe,permission,messageAlert,dataRecipe
+	formRecipe,permission,messageAlert,dataRecipe,fetchData
 });
 const store = createStore(reducers,middleware);
 export default store;
