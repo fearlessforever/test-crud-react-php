@@ -38,6 +38,29 @@ LOCK TABLES `master_resep` WRITE;
 INSERT INTO `master_resep` VALUES (2,'Okez lah'),(3,'asasgasg');
 /*!40000 ALTER TABLE `master_resep` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `recipe_master`
+--
+
+DROP TABLE IF EXISTS `recipe_master`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `recipe_master` (
+  `id_recipe` int(11) NOT NULL AUTO_INCREMENT,
+  `recipe_name` varchar(99) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id_recipe`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `recipe_master`
+--
+
+LOCK TABLES `recipe_master` WRITE;
+/*!40000 ALTER TABLE `recipe_master` DISABLE KEYS */;
+/*!40000 ALTER TABLE `recipe_master` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -48,4 +71,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-09 14:31:27
+-- Dump completed on 2018-01-11  9:28:08

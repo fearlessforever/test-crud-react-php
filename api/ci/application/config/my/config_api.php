@@ -10,6 +10,7 @@
 $config['api_access_list'] = array(
 	'dashboard'=>array( 'accesstoken'=>false, 'model'=>'Dashboard/Dashboard' ) 
 	,'master-resep-makanan'=>array( 'accesstoken'=>false, 'model'=>'Master/ResepMakanan' ) 
+	,'master-resep-makanan2'=>array( 'accesstoken'=>false, 'model'=>'Master/ResepMakanan2' ) 
 );
 
 $config['api_time'] = 3600; // 1 jam = 3600
